@@ -1,0 +1,25 @@
+{
+  "name": "msc-reminder",
+  "version": "1.0.0",
+  "description": "<msc-reminder /> provides a notification features for user. It applied slot to open a tunnel let developers put LightDOM elements into ShadowDOM. That means developers could use any design they like as content to display.",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/meistudioli/msc-reminder.git"
+  },
+  "keywords": [
+    "web",
+    "front-end",
+    "web component",
+    "reminder"
+  ],
+  "author": "Paul Li",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/meistudioli/msc-reminder/issues"
+  },
+  "homepage": "https://github.com/meistudioli/msc-reminder#readme"
+}

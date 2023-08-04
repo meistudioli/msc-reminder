@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Web Component: &lt;msc-reminder /> - web components based notification module</title>
+<meta name="description" content="&lt;msc-reminder /> provides a notification features for user. It applied slot to open a tunnel let developers put LightDOM elements into ShadowDOM. That means developers could use any design they like as content to display." />
+<script type="module" src="mjs/wc-msc-reminder.js"></script>
+<style>
+/* reset */
+body,div,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,legend,input,textarea,p,article,aside,figcaption,figure,nav,section,mark,audio,video,main{margin:0;padding:0}
+article,aside,figcaption,figure,nav,section,main{display:block}
+fieldset,img{border:0}
+address,caption,cite,em,strong{font-style:normal;font-weight:400}
+ol,ul{list-style:none}
+caption{text-align:left}
+h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:400}
+abbr{border:0;font-variant:normal}
+input,textarea,select{font-family:inherit;font-size:inherit;font-weight:inherit;}
+body{-webkit-text-size-adjust:none}
+select,input,button,textarea{font:100% arial,helvetica,clean,sans-serif;}
+del{font-style:normal;text-decoration:none}
+pre{font-family:monospace;line-height:100%}
+progress{-webkit-appearance:none;appearance:none;overflow:hidden;border:0 none;}
+
+/* page */
+:root {
+  --bd-bg: #fff;
+  --subject-text: #000;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bd-bg: #121212;
+    --subject-text: #e8eaed;
+  }
+}
+
+/* defaults */
+:root {
+  --ON: initial;
+  --OFF: ;
+  
+  /* fuji */
+  --white: 255 255 255;
+  --marshmallow: 245 248 250;
+  --grey-hair: 240 243 245;
+  --dirty-seagull: 224 228 233;
+  --pebble: 199 205 210;
+  --bob: 176 185 193;
+  --gandalf: 151 158 168;
+  --shark: 130 138 147;
+  --dolphin: 110 119 128;
+  --battleship: 91 99 106;
+  --charcoal: 70 78 86;
+  --ramones: 44 54 63;
+  --batcave: 35 42 49;
+  --inkwell: 29 34 40;
+  --midnight: 16 21 24;
+  --black: 0 0 0;
+  --watermelon: 255 82 87;
+  --solo-cup: 235 15 41;
+  --malibu: 255 0 128;
+  --barney: 204 0 140;
+  --mimosa: 255 211 51;
+  --turmeric: 255 167 0;
+  --masala: 255 139 18;
+  --cheetos: 253 97 0;
+  --carrot-juice: 255 82 13;
+  --mulah: 26 197 103;
+  --bonsai: 0 135 81;
+  --spirulina: 0 160 160;
+  --sea-foam: 17 211 205;
+  --peeps: 125 203 255;
+  --sky: 18 169 255;
+  --dory: 15 105 255;
+  --scooter: 0 99 235;
+  --cobalt: 0 58 188;
+  --denim: 26 13 171;
+  --blurple: 93 94 255;
+  --hendrix: 248 244 255;
+  --thanos: 144 124 255;
+  --starfish: 119 89 255;
+  --hulk-pants: 126 31 255;
+  --grape-jelly: 96 1 210;
+  --mulberry: 80 21 176;
+  --malbec: 57 0 125;
+
+  /* property */
+  --theme-gradient-start: 255 231 98;
+  --theme-gradient-end: 252 218 25;
+  --anchor-green: 58 191 186;
+  --mark-buynow: 0 120 255;
+  --mark-bidding: 255 139 18;
+  --mark-metro-express: 255 77 82;
+  --heart-red: 253 79 87;
+
+  /* shadow */
+  --shadow-elevations-1: 0 1px 0 rgba(var(--dirty-seagull)), 0 0 1px rgba(var(--black)/0);
+  --shadow-elevations-2: 0 0 1px rgba(var(--black)/.1), 0 2px 4px rgba(var(--black)/.08);
+  --shadow-elevations-3: 0 0 1px rgba(var(--black)/.08), 0 4px 8px rgba(var(--black)/.1);
+  --shadow-elevations-4: 0 0 2px rgba(var(--black)/.05), 0 4px 16px rgba(var(--black)/.2);
+  --shadow-elevations-5: 0 0 16px rgba(var(--black)/.05), 0 32px 32px 20px rgba(var(--black)/.4);
+
+  /* safe-area */
+  --el:0;
+  --et:0;
+  --eb:0;
+  --basis-padding: 1em;
+  --spl: calc(var(--el) + var(--basis-padding));
+  --spb: calc(var(--eb) + var(--basis-padding));
+
+  /* icons */
+  --icon-home: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxNicgaGVpZ2h0PScxNicgdmlld0JveD0nMCAwIDMyIDMyJz48cGF0aCBmaWxsPScjZmZmJyBkPSdNMTYuMTUzIDMuMjI0TDAgMTYuOTYyaDQuMzE0djExLjgxNGg5Ljg3di04LjAwM2gzLjkzNHY4LjAwM2g5Ljg0VjE2Ljk2MkgzMicvPjwvc3ZnPg==) no-repeat 50% 50%/16px 16px;
+  --icon-cart: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScyNCcgaGVpZ2h0PScyNCc+PHBhdGggZmlsbD0nI2ZmZicgZD0nTTkuNSAxMC41SDE2Yy41NTIgMCAxIC40NDQgMSAxIDAgLjU1Mi0uNDQ1IDEtMSAxSDkuNWMtLjU1MiAwLTEtLjQ0NC0xLTEgMC0uNTUyLjQ0NS0xIDEtMXpNMTAgMjFhMiAyIDAgMTAtMy45OTktLjAwMUEyIDIgMCAwMDEwIDIxem05LjUgMGEyIDIgMCAxMC0zLjk5OS0uMDAxQTIgMiAwIDAwMTkuNSAyMXpNNC40OTYgMkg0LjVjLjU1Mi4wMDUuOTk4LjQ0NSAxIC45OTZMNyAxNWgxMS41TDIwIDQuOTk2UzIwLjA4MiA0IDIxIDRjLjkxNSAwIDEgLjc2MiAxIDFsLTEuNSAxMS4wMDRjMCAuNTUtLjQ0OC45OTYtMSAuOTk2SDZhMSAxIDAgMDEtMS0uOTk2TDMuNjE2IDRIMS4wMUMuNDUgNCAwIDMuNTU2IDAgM2MwLS41NTIuNDUtMSAxLjAxLTFoMy40ODV6TTkuNSA1LjVIMTZjLjU1MiAwIDEgLjQ0NCAxIDEgMCAuNTUyLS40NDUgMS0xIDFIOS41Yy0uNTUyIDAtMS0uNDQ0LTEtMSAwLS41NTIuNDQ1LTEgMS0xeicvPjwvc3ZnPg==) no-repeat 0% 50%/contain;
+  --icon-order: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScyNCcgaGVpZ2h0PScyNCc+PHBhdGggZmlsbD0nI2ZmZicgZD0nTTE4LjYxIDE5LjI1NmwtLjY0Mi0uNDYtMS4yMTgtLjg3Ny0xLjE0My45NjctMS4xNi45ODQtMS4yMzMtMS4wMDMtMS4yMTQtLjk5LTEuMjE0Ljk5LTEuMjMgMS4wMDQtMS4xNjUtLjk4NC0xLjE0My0uOTY3LTEuMjE4Ljg3NS0uNjQuNDZWMy44MzZoMTMuMjJ2MTUuNDJ6TTQuNDQ1IDJhLjk0Ni45NDYgMCAwMC0uOTQ0Ljk0djE4LjEzNmMwIC41NC40NTYuOTIuOTQ4LjkyLjE3IDAgLjM0OC0uMDQ2LjUxLS4xNDhsMi4xOTMtMS41NzZMOC45NyAyMS44MWEuOTc0Ljk3NCAwIDAwMS4xMjcuMDJMMTIgMjAuMjczbDEuOTA2IDEuNTU1YS45NzIuOTcyIDAgMDAxLjEyNy0uMDJsMS44MTQtMS41MzggMi4xOTYgMS41NzZjLjE2My4xMDIuMzQuMTQ4LjUxLjE0OC40OTIgMCAuOTQ3LS4zOC45NDctLjkyVjIuOTRhLjk0NS45NDUgMCAwMC0uOTQ0LS45NEg0LjQ0NHptMTEuMzMzIDEwLjExM2MuNTIyIDAgLjk0NS0uNDEuOTQ1LS45MThzLS40MjMtLjkyLS45NDUtLjkySDguMjIzYS45MzIuOTMyIDAgMDAtLjk0NC45MmMwIC41MDcuNDIuOTE4Ljk0My45MThoNy41NTR6TTExLjA1NSA4LjQ0Yy4yNjIgMCAuOTQ1LS4yMjQuOTQ1LS45MiAwLS41MDctLjQyMy0uOTE3LS45NDUtLjkxN0g4LjIyM2MtLjUyMiAwLS45NDQuNDEtLjk0NC45MThzLjQyLjkyLjk0My45MmgyLjgzMnptNC43MjIgNy4zNDdjLjUyMiAwIC45NDUtLjQxLjk0NS0uOTE4IDAtLjUxLS40MjMtLjkyLS45NDUtLjkySDguMjIzYS45My45MyAwIDAwLS45NDQuOTJjMCAuNTA2LjQyLjkxNy45NDMuOTE3aDcuNTU0eicvPjwvc3ZnPg==) no-repeat 0% 50%/contain;
+  --icon-close: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScyNCcgaGVpZ2h0PScyNCc+PHBhdGggZmlsbD0nIzk3OWVhOCcgZD0nTTEyIDEwLjU4OEw2LjcwMiA1LjI5YTEgMSAwIDAwLTEuNDA4LjAwNC45OTMuOTkzIDAgMDAtLjAwMyAxLjQwOEwxMC41ODggMTJsLTUuMjk3IDUuMjk3YTEgMSAwIDAwLjAwMyAxLjQwOC45OTMuOTkzIDAgMDAxLjQwOC4wMDRMMTIgMTMuNDExbDUuMjk4IDUuMjk4YS45OTkuOTk5IDAgMDAxLjQxMS0xLjQxMkwxMy40MTIgMTJsNS4yOTctNS4yOThhMSAxIDAgMDAtLjAwMy0xLjQwOC45OTUuOTk1IDAgMDAtMS40MDgtLjAwNEwxMiAxMC41ODh6Jy8+PC9zdmc+) no-repeat 50% 50%/24px 24px;
+  --icon-arrow-left: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScyNCcgaGVpZ2h0PScyNCc+PHBhdGggZD0nTTEwLjgwMiAxMmw0LjkwNi00LjgzNGEuOTczLjk3MyAwIDAwLS4wMDMtMS4zNzguOTk0Ljk5NCAwIDAwLTEuMzk3LS4wMDNMOCAxMi4wMDFsNi4zMSA2LjIxN2MuMzc4LjM3MyAxLjAxLjM4IDEuMzk3LS4wMDJhLjk2Mi45NjIgMCAwMC4wMDMtMS4zNzhsLTQuOTA4LTQuODM3eicgZmlsbD0nI2ZmZicgZmlsbC1ydWxlPSdldmVub2RkJy8+PC9zdmc+) no-repeat 50% 50%/24px 24px;
+  --icon-arrow-right: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScyNCcgaGVpZ2h0PScyNCc+PHBhdGggZD0nTTEzLjE5NyAxMkw4LjI5MSA3LjE2NmEuOTczLjk3MyAwIDAxLjAwMy0xLjM3OC45OTQuOTk0IDAgMDExLjM5Ny0uMDAzbDYuMzA4IDYuMjE2LTYuMzEgNi4yMTdjLS4zNzguMzczLTEuMDEuMzgtMS4zOTctLjAwMmEuOTYyLjk2MiAwIDAxLS4wMDMtMS4zNzhsNC45MDgtNC44Mzd6JyBmaWxsPScjZmZmJyBmaWxsLXJ1bGU9J2V2ZW5vZGQnLz48L3N2Zz4=) no-repeat 50% 50%/24px 24px;
+
+  /* mask */
+  --mask-chevron-next: path('M13.197 12 8.29 7.167a.971.971 0 0 1 .003-1.378.995.995 0 0 1 1.397-.003L16 12.001l-6.31 6.217a1.004 1.004 0 0 1-1.397-.002.962.962 0 0 1-.003-1.378l4.908-4.837Z');
+
+  /* animation */
+  --transition-timing-function: cubic-bezier(.4,0,.2,1);
+
+  /* pages */
+  --view: '';
+  --max-width: 100%;
+  /*--section-padding: 0 1em;*/
+  --section-padding: 0 calc(1em + var(--el));
+  --border-radius: .5em;
+  --direction-factor: 1;
+  --margin-block-gap: 1.25em;
+
+  --main-bgc: #f1f1f5;
+  --module-bgc: rgba(var(--white));
+  --text-color: #232a31;
+
+  /* modules */
+  --nav-inline-size: 13em;
+  --intro-text: #5f6368;
+}
+
+@supports (bottom:env(safe-area-inset-top)) {
+  :root {
+    --el: env(safe-area-inset-left);
+    --et: env(safe-area-inset-top);
+    --eb: env(safe-area-inset-bottom);
+  }
+
+  @supports (bottom:max(.75em,1px)) {
+    :root {
+      --spl: max(var(--basis-padding), var(--el));
+      --spb: max(var(--basis-padding), var(--eb));
+    }
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --intro-text: #9aa0a6;
+  }
+}
+
+/* page */
+html{font-family:system-ui,sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;font-size:16px;background-color:var(--main-bgc);scroll-behavior:smooth;}
+html[dir='rtl']{--direction-factor:-1;}
+#bd{margin:0 auto;}
+a,a:hover{text-decoration:none;}
+a{color:rgba(var(--anchor-green));}
+.center-module{max-inline-size:var(--max-width);margin:0 auto;box-sizing:border-box;padding:var(--section-padding);}
+.center-module--main>*{margin-block-start:var(--margin-block-gap);}
+
+.absolute-center{position:absolute;top:0;left:0;bottom:0;right:0;margin:auto;}
+.text-overflow{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.text-overflow--ltr-start{direction:rtl;text-align:start;}
+.text-overflow--rtl{direction:rtl;text-align:end;}
+.line-fadeout{position:relative;}
+.line-fadeout:after{position:absolute;content:'';text-align:right;bottom:0;right:0;width:70%;height:var(--fadeout-h, 1.2em);background:linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,1));}
+.line-clampin{display:-webkit-box;-webkit-line-clamp:var(--line-clamp,2);-webkit-box-orient:vertical;text-overflow:ellipsis;overflow:hidden;}
+.stuff{text-indent:100%;white-space:nowrap;overflow:hidden;}
+.aspect-ratio{position:relative;width:100%;--w:4;--h:3;}
+.aspect-ratio:before{content:'';width:100%;padding-top:calc(var(--h) * 100% / var(--w));display:block;}
+.aspect-ratio .content{position:absolute;top:0;left:0;right:0;bottom:0;}
+.force-radius{overflow:hidden;transform:translate3d(0,0,0);border-radius:var(--r,8px);}
+.contain{object-fit:contain;}
+.cover{object-fit:cover;}
+.overscrolling{-webkit-overflow-scrolling:touch;overflow:hidden;overflow-y:scroll;overscroll-behavior:contain;}
+.vanquish{position:absolute;left:0;top:0;width:1px;height:1px;overflow:hidden;}
+.flex-center{display:flex;justify-content:center;align-items:center;}
+
+/* media query */
+@media screen and (max-width: 767px) {
+  :root {
+    --view: 'mobile';
+    --section-padding: 0;
+    --border-radius: 0;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  :root {
+    --view: 'tablet';
+    --max-width: 1023px;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  :root {
+    --view: 'desktop';
+    --max-width: 1279px;
+  }
+}
+
+@media screen and (min-width: 1280px) {
+  :root {
+    --view: 'desktop max';
+    --max-width: 1280px;
+    --section-padding: 0 1.5em;
+  }
+}
+
+/* buttons */
+/*
+ * html usage:
+  <button
+    class="buttons"
+    data-type="primary"
+    data-size="small"
+  >
+    Button
+  </button>
+*/
+
+.buttons {
+/*  --default-border-color: transparent;
+  --default-background-color: rgba(var(--dory));
+  --default-text-color: rgba(var(--white));
+
+  --border-size: 2px;
+  --border-color: var(--default-border-color);
+  --background-color: var(--default-background-color);
+  --color: var(--default-text-color);*/
+
+  --border-size: 2px;
+  --border-color: var(--default-border-color, transparent);
+  --background-color: var(--default-background-color, rgba(var(--dory)));
+  --color: var(--default-text-color, rgba(var(--white)));
+  --justify-content: var(--default-justify-content, center);
+
+  --font-size: 14px;
+  --block-size: 32px;
+  --padding-inline: 24px;
+  --gap: 4px;
+
+  --box-shadow: 0 0 0 transparent;
+  --border-radius: var(--block-size);
+  --btn-active: scale(.97);
+
+  --overlay-opacity-normal: 0;
+  --overlay-opacity-active: .2;
+  --overlay-opacity: var(--overlay-opacity-normal);
+  --overlay-color: var(--inkwell);
+  --overlay: rgba(var(--overlay-color)/var(--overlay-opacity));
+
+  --transition: background-color 200ms var(--transition-timing-function);
+}
+
+.buttons{position:relative;font-size:var(--font-size);color:var(--color);font-family:YahooSans,'Helvetica Neue',Helvetica,Arial,sans-serif;inline-size:fit-content;inline-size:-moz-fit-content;block-size:var(--block-size);background:var(--background-color);padding-inline:var(--padding-inline);border-radius:var(--border-radius);box-sizing:border-box;appearance:none;box-shadow:var(--box-shadow);display:flex;gap:var(--gap);align-items:center;overflow:hidden;border:0 none;transition:var(--transition);justify-content:var(--justify-content);}
+.buttons::before{position:absolute;inset-inline-start:0;inset-block-start:0;inline-size:100%;block-size:100%;box-sizing:border-box;border:var(--border-size) solid var(--border-color);border-radius:var(--border-radius);content:'';}
+.buttons::after{position:absolute;inset-inline-start:0;inset-block-start:0;inline-size:100%;block-size:100%;background-color:var(--overlay);content:'';pointer-events:none;z-index:1;transition:var(--transition);}
+.buttons:focus,
+.buttons:focus-visible{outline:0 none;}
+.buttons:active{transform:var(--btn-active);}
+.buttons:focus-visible{--overlay-opacity:var(--overlay-opacity-active);}
+.buttons--full{inline-size:100%;justify-content:center;}
+
+/*
+ * types: https://git.vzbuilders.com/pages/fuji-design/fuji-docs/app/buttonsTypes.html
+ * take light background spec only
+ */
+.buttons[data-type='primary'] {
+  --default-background-color: rgba(var(--dory));
+  --color: rgba(var(--white));
+  --border-color: transparent;
+  --overlay-color: var(--inkwell);
+}
+
+.buttons[data-type='primary-with-shadow'] {
+  --default-background-color: rgba(var(--white));
+  --default-text-color: rgba(var(--dory));
+  --border-color: transparent;
+  --box-shadow: var(--shadow-elevations-3);
+  --overlay-color: var(--inkwell);
+}
+
+.buttons[data-type='secondary1'] {
+  --default-text-color: rgba(var(--dory));
+  --background-color: transparent;
+  --border-color: var(--color);
+  --overlay-color: var(--dirty-seagull);
+}
+
+.buttons[data-type='secondary2'] {
+  --default-text-color: rgba(var(--dory));
+  --background-color: transparent;
+  --border-color: rgba(var(--dirty-seagull));
+  --overlay-color: var(--dirty-seagull);
+}
+
+.buttons[data-type='ghost'] {
+  --default-text-color: rgba(var(--dory));
+  --border-color: transparent;
+  --background-color: transparent;
+  --overlay-color: var(--dirty-seagull);
+}
+
+/*
+ * sizes: https://git.vzbuilders.com/pages/fuji-design/fuji-docs/app/buttonsTypes.html;
+ */
+.buttons[data-size='xx-small'] {
+  --font-size: 12px;
+  --block-size: 24px;
+  --padding-inline: 16px;
+  --gap: 4px;
+}
+
+.buttons[data-size='x-small'] {
+  --font-size: 12px;
+  --block-size: 28px;
+  --padding-inline: 20px;
+  --gap: 4px;
+}
+
+.buttons[data-size='small'] {
+  --font-size: 14px;
+  --block-size: 32px;
+  --padding-inline: 24px;
+  --gap: 4px;
+}
+
+.buttons[data-size='medium'] {
+  --font-size: 14px;
+  --block-size: 36px;
+  --padding-inline: 28px;
+  --gap: 8px;
+}
+
+.buttons[data-size='large'] {
+  --font-size: 16px;
+  --block-size: 44px;
+  --padding-inline: 36px;
+  --gap: 8px;
+}
+
+.buttons[data-size='x-large'] {
+  --font-size: 18px;
+  --block-size: 56px;
+  --padding-inline: 44px;
+  --gap: 8px;
+}
+
+/*
+ * disable: https://git.vzbuilders.com/pages/fuji-design/fuji-docs/app/buttonsInactive.html
+ */
+.buttons[data-type='primary'][disabled],
+.buttons[data-type='primary-with-shadow'][disabled] {
+  --background-color: rgba(var(--grey-hair));
+  --color: rgba(var(--bob));
+}
+
+.buttons[data-type='secondary1'][disabled] {
+  --background-color: transparent;
+  --color: rgba(var(--bob));
+  --border-color: rgba(var(--dirty-seagull));
+}
+
+.buttons[data-type='secondary2'][disabled] {
+  --background-color: transparent;
+  --color: rgba(var(--bob));
+  --border-color: rgba(var(--bob)/.5);
+}
+
+.buttons[data-type='ghost'][disabled] {
+  --background-color: transparent;
+  --color: rgba(var(--bob));
+  --border-color: transparent;
+}
+
+@media (hover: hover) {
+  .buttons:hover {
+    --overlay-opacity: var(--overlay-opacity-active);
+  }
+
+  .buttons[disabled]:hover {
+    --overlay-opacity-active: 0;
+    --btn-active: scale(1);
+  }
+}
+
+/*
+ * example
+  <div class="radio-set radio-set--enable-dark-mode">
+    <input id="my-radio" type="radio" name="radio" value="0" />
+    <label class="radio-set__label" for="my-radio"></label>
+  </div>
+ */
+
+.radio-set {
+  --size: 1.25em;
+  --border-radius: var(--size);
+  --duration: 100ms;
+  --timing-function: cubic-bezier(.4,0,.2,1);
+
+  /* normal */
+  --accent-color: var(--default-accent-color, rgba(42 108 246));
+  --border-color: var(--default-border-color, rgba(131 138 146));
+  --background-color: var(--default-background-color, rgba(255 255 255));
+  --dot-color: var(--default-dot-color, var(--accent-color));
+  
+  /* disabled */
+  --border-color--disabled: var(--default-border-color--disabled, rgba(178 185 192));
+  --background-color--disabled: var(--default-background-color--disabled, rgba(255 255 255));
+  --dot-color--disabled: var(--default-dot-color--disabled, rgba(178 185 192));
+}
+
+.radio-set__label {
+  --dot-scale-normal: .001;
+  --dot-scale-active: 1;
+  --dot-scale: var(--dot-scale-normal); 
+}
+
+.radio-set input:checked~.radio-set__label {
+  --border-color: var(--accent-color);
+  --dot-scale: var(--dot-scale-active);
+}
+
+.radio-set input:not(:disabled):focus-visible~.radio-set__label {
+  --border-color: var(--accent-color);
+}
+
+.radio-set input:disabled~.radio-set__label {
+  --border-color: var(--border-color--disabled);
+  --background-color: var(--background-color--disabled);
+  --dot-color: var(--dot-color--disabled);
+}
+
+.radio-set{position:relative;inline-size:var(--border-radius);aspect-ratio:1/1;overflow:hidden;}
+.radio-set input{position:absolute;top:-100%;outline:0 none;}
+.radio-set__label{position:relative;inline-size:100%;block-size:100%;background-color:var(--background-color);display:block;border-radius:var(--border-radius);overflow:hidden;}
+.radio-set__label::before{position:absolute;inset-inline-start:0;inset-block-start:0;content:'';inline-size:100%;block-size:100%;border-radius:var(--size);box-shadow:inset 0 0 0 2px var(--border-color);box-sizing:border-box;transition:box-shadow var(--duration) var(--timing-function);will-change:box-shadow;}
+.radio-set__label::after{position:absolute;inset-inline:0;inset-block:0;content:'';inline-size:8px;block-size:8px;margin:auto;border-radius:8px;background-color:var(--dot-color);transition:transform var(--duration) var(--timing-function);will-change:transform;transform:scale(var(--dot-scale));}
+
+@media (hover: hover) {
+  .radio-set input:not(:disabled)~.radio-set__label:hover {
+    --border-color: var(--accent-color);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .radio-set {
+    --default-accent-color: rgba(75 168 248);
+    --default-border-color: rgba(131 138 146);
+    --default-background-color: rgba(0 0 0);
+
+    --default-border-color--disabled: rgba(131 138 146);
+    --default-background-color--disabled: rgba(44 54 63);
+  }
+}
+
+html,body{font-family:system-ui,sans-serif;text-size-adjust:100%;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;font-size:16px;}
+#hd,#ft{display:none;}
+body{position:relative;inline-size:100vw;block-size:100vh;margin:0;background:var(--bd-bg);}
+
+.subject{position:relative;font-size:1em;color:var(--subject-text);line-height:2;padding-left:.75em;}
+.subject:before{position:absolute;left:0;top:50%;content:'';width:.375em;height:.375em;border-radius:.375em;background-color:currentColor;margin-top:-.1875em;}
+.flex-center{display:flex;justify-content:center;align-items:center;}
+.wrap{inline-size:100%;max-inline-size:min(800px, calc(100% - 2em));box-sizing:border-box;}
+.hero{inline-size:100%;background-color:#dce2f0;border-radius:.5em;padding:2em;box-sizing:border-box;}
+
+.setting-form {
+  --background-color: #dce2f0;
+  /*--default-theme: rgba(var(--dory));*/
+}
+
+.setting-form .buttons[data-type]{
+  --overlay-color: var(--inkwell);
+}
+
+.setting-form{inline-size:100%;box-sizing:border-box;margin-block:2.5em;margin-inline:auto;display:block;}
+.setting-form .buttons{align-self:center;}
+.button__wrap{inline-size:100%;border-radius:.5em;padding:5em 1em;background-color:var(--background-color);display:flex;flex-direction:column;gap:1.25em;box-sizing:border-box;}
+
+.adjustments{inline-size:100%;max-inline-size:600px;margin:1.5em auto 0;}
+.adjustments__label{inline-size:100%;display:block;margin-block-start:.5em;}
+.adjustments .adjustments__label:nth-of-type(n+2){margin-block-start:1em;}
+.adjustments__div{display:flex;gap:.5em;align-items:flex-start;}
+.adjustments__span{color:var(--intro-text);}
+
+.adjustments__div--fix-subject{inline-size:100%;}
+.adjustments__div--fix-subject .subject{inline-size:80px;flex-shrink:0;}
+.adjustments__div--fix-subject input[type=range]{flex-grow:1;accent-color:#1b6efb;}
+.adjustments__div--fix-subject .radios{flex-grow:1;}
+.radios{display:flex;gap:1em 2em;align-items:center;flex-wrap:wrap;padding-block-start:5px;}
+.radio-unit{display:flex;gap:.5em;align-items:center;}
+.radio-unit__label{font-size:1em;color:var(--intro-text);}
+
+.il-pair {
+  --gap: var(--il-pair-gap, .75em);
+  --align-items: var(--il-align-item, flex-start);
+}
+
+.il-pair{display:flex;align-items:var(--align-items);gap:var(--gap);}
+.il-pair>:first-child{flex-shrink:0;}
+.il-pair>label{line-height:20px;}
+
+.checkbox-label{color:var(--intro-text);}
+
+@media (prefers-color-scheme: dark) {
+  .setting-form:not(.esc-dark-mode) {
+    --background-color: rgba(var(--inkwell));
+  }
+
+  .setting-form .buttons[data-type]{
+    --overlay-color: 224 228 233;
+  }
+
+  .buttons[data-type='secondary1'] {
+    --default-text-color: rgba(18 169 255);
+  }
+}
+
+.dummy__content{inline-size:500px;}
+.mockcontent{inline-size:100%;min-block-size:80px;display:flex;gap:16px;align-items:center;}
+.mockcontent__vision{flex-shrink:0;inline-size:48px;aspect-ratio:1/1;background-color:rgba(48 209 88);clip-path:path('M9.8,37.3c-1.8-1.8-3.2-3.9-4.3-6.3s-1.6-5-1.6-7.8s0.5-5.4,1.6-7.8S8,10.8,9.8,9l2.1,2.2c-1.5,1.5-2.8,3.3-3.6,5.4 s-1.3,4.3-1.3,6.6s0.4,4.6,1.3,6.6c0.9,2,2.1,3.8,3.7,5.4L9.8,37.3z M15.4,31.6c-1.1-1.1-1.9-2.3-2.6-3.8c-0.6-1.5-1-3-1-4.7 c0-1.7,0.3-3.3,1-4.7c0.6-1.5,1.5-2.7,2.6-3.8l2.1,2.1c-0.8,0.8-1.4,1.7-1.9,2.8c-0.5,1.1-0.7,2.3-0.7,3.5c0,1.3,0.2,2.4,0.7,3.5 c0.5,1.1,1.1,2,1.9,2.9L15.4,31.6z M23.9,27.1c-1.1,0-2-0.4-2.8-1.2s-1.2-1.7-1.2-2.8s0.4-2,1.2-2.8s1.7-1.2,2.8-1.2s2,0.4,2.8,1.2 c0.8,0.8,1.2,1.7,1.2,2.8s-0.4,2-1.2,2.8C26,26.7,25,27.1,23.9,27.1z M32.4,31.6l-2.1-2.1c0.8-0.8,1.4-1.7,1.9-2.8s0.7-2.3,0.7-3.5 c0-1.3-0.2-2.4-0.7-3.5c-0.5-1.1-1.1-2-2-2.9l2.1-2.1c1.1,1.1,1.9,2.3,2.6,3.8c0.6,1.5,0.9,3,0.9,4.7c0,1.7-0.3,3.2-0.9,4.7 C34.4,29.2,33.5,30.5,32.4,31.6z M38.1,37.3l-2.2-2.2c1.5-1.5,2.8-3.3,3.7-5.4s1.3-4.3,1.3-6.6s-0.4-4.6-1.3-6.6 c-0.9-2-2.1-3.8-3.7-5.4L38.1,9c1.8,1.8,3.2,4,4.3,6.4c1,2.4,1.6,5,1.6,7.8s-0.5,5.4-1.6,7.8C41.3,33.3,39.9,35.4,38.1,37.3z');}
+.mockcontent__text{flex-grow:1;min-inline-size:0;display:flex;gap:8px;flex-direction:column;}
+.mockcontent__text__title{color:rgba(255 255 255);font-size:19px;}
+.mockcontent__text__description{font-size:17px;line-height:22px;color:rgba(99 99 102);}
+
+/* msc-reminder */
+msc-reminder {
+  --msc-reminder-margin: 16px;
+  --msc-reminder-padding: 24px;
+  --msc-reminder-shadow-color: 0 0 0;
+
+  z-index: 1000;
+}
+msc-reminder:not(:defined){visibility:hidden;}
+</style>
+</head>
+
+<body class="flex-center">
+
+<div class="wrap">
+  <form class="setting-form">
+    <div class="button__wrap">
+      <button
+        type="button"
+        class="buttons buttons--show"
+        data-type="secondary1"
+        data-size="large"
+      >
+        SHOW REMINDER
+      </button>
+    </div>
+
+    <label class="adjustments__label">
+      <div class="adjustments__div adjustments__div--fix-subject">
+        <p class="subject">button︰</p>
+        <div class="radios">
+          <div class="il-pair">
+            <div class="radio-set">
+              <input id="button-type-0" type="radio" name="button-type" value="dual" checked />
+              <label class="radio-set__label" for="button-type-0"></label>
+            </div>
+            <label class="checkbox-label" for="button-type-0">Dual</label>
+          </div>
+
+          <div class="il-pair">
+            <div class="radio-set">
+              <input id="button-type-1" type="radio" name="button-type" value="confirm" />
+              <label class="radio-set__label" for="button-type-1"></label>
+            </div>
+            <label class="checkbox-label" for="button-type-1">Confirm only</label>
+          </div>
+
+          <div class="il-pair">
+            <div class="radio-set">
+              <input id="button-type-2" type="radio" name="button-type" value="none" />
+              <label class="radio-set__label" for="button-type-2"></label>
+            </div>
+            <label class="checkbox-label" for="button-type-2">None</label>
+          </div>
+        </div>
+      </div>
+    </label>
+  </form>
+</div>
+
+<msc-reminder>
+  <script type="application/json">
+    {
+      "l10n": {
+        "confirm": "OK",
+        "cancel": "CANCEL"
+      },
+      "confirm": true,
+      "cancel": true,
+      "sound": true,
+      "vibrate": true
+    }
+  </script>
+
+  <div class="dummy__content">
+    <div class="mockcontent">
+      <div class="mockcontent__vision"></div>
+      <div class="mockcontent__text">
+        <p class="mockcontent__text__title">Mobile Data is Turned Off.</p>
+        <p class="mockcontent__text__description">Turn on mobile data or use Wi-Fi to access data.</p>
+      </div>
+    </div>
+  </div>
+</msc-reminder>
+
+<script type="module">
+customElements.whenDefined('msc-reminder').then(() => {
+  const trigger = document.querySelector('.buttons--show');
+  const reminder = document.querySelector('msc-reminder');
+  const form = document.querySelector('form');
+
+  const events = [
+    'msc-reminder-confirm',
+    'msc-reminder-cancel'
+  ];
+
+  const handler = (evt) => {
+    const { type, detail = null } = evt;
+
+    switch (type) {
+      case 'msc-reminder-confirm': {
+        console.log(
+          `%c${type}%c > 「%cCONFIRM%c」has been tapped.`,
+          'font-size:12px;line-height:1.3;background:#3a99d8;color:#fff;border-radius:3px;padding:0 4px;',
+          'font-size:12px;line-height:1.3;',
+          'font-size:12px;line-height:1.3;color:#a4f6b7;',
+          'font-size:12px;line-height:1.3;'
+        );
+        break;
+      }
+
+      case 'msc-reminder-cancel': {
+        console.log(
+          `%c${type}%c > 「%cCANCEL%c」has been tapped.`,
+          'font-size:12px;line-height:1.3;background:#3a99d8;color:#fff;border-radius:3px;padding:0 4px;',
+          'font-size:12px;line-height:1.3;',
+          'font-size:12px;line-height:1.3;color:#a4f6b7;',
+          'font-size:12px;line-height:1.3;'
+        );
+        break;
+      }
+    };
+  };
+
+  // events
+  events.map(
+    (event) => {
+      reminder.addEventListener(event, handler);
+    }
+  );
+
+  trigger.addEventListener('click',
+    () => {
+      reminder.show = true;
+    }
+  );
+
+  form.addEventListener('change',
+    () => {
+      const formData = new FormData(form);
+      const dataObject = Object.fromEntries(formData.entries());
+
+      switch (dataObject['button-type']) {
+        case 'dual':
+          reminder.confirm = true;
+          reminder.cancel = true;
+          break;
+
+        case 'confirm':
+          reminder.confirm = true;
+          reminder.cancel = false;
+          break;
+
+        case 'none':
+          reminder.confirm = false;
+          reminder.cancel = false;
+          break;
+      }
+    }
+  );
+});
+</script>
+</body>
+
+</html>
