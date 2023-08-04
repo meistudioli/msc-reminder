@@ -1,6 +1,6 @@
 {
   "name": "msc-reminder",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "<msc-reminder /> provides a notification features for user. It applied slot to open a tunnel let developers put LightDOM elements into ShadowDOM. That means developers could use any design they like as content to display.",
   "main": "index.html",
   "scripts": {
